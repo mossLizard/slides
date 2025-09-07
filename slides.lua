@@ -1,4 +1,5 @@
 panel = window -- my w key is dodgy so I ould like to minimize the number of times I need to rely on it
+plane = require("lib/charPlane")
 scrn = peripheral.wrap("monitor_1")
 
 function test_a()
@@ -23,5 +24,13 @@ function test_b()
   scrn.clear()
   slideBase.redraw()
   print("E")
+  
+  testPlane_a = plane.new(8,16)
+  testPlane_b = plane.new(12,12)
+  testPlane_a.test_set("beep")
+  testPlane_b.test_set("boop")
+  print(testPlane_a.test_get())
+  print(testPlane_b.test_get())
+
 end
 test_b()
