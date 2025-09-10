@@ -1,13 +1,22 @@
 panel = window -- my w key is dodgy so I ould like to minimize the number of times I need to rely on it
+serl = textutils.serializeJSON
 plane = require("lib/charPlane")
 scrn = peripheral.wrap("monitor_1")
 
 function test_a()
-  scrn.setCursorPos(2,2)
-  scrn.setTextColor(0)
-  scrn.setBackgroundColor(2^15)
-  scrn.clear()
-  scrn.write("test")
+  screen.setCursorPos(2,2)
+  screen.setTextColor(0)
+  screen.setBackgroundColor(2^15)
+  screen.clear()
+  screen.write("test")
+end
+
+function blitSprite(self, sprite, spriteX, spriteY)
+  for i = 1, sprite.width do
+    self.setCursorPos(spriteX, spriteY + i)
+	--print(sprite:getBlits(i))
+	self.blit(sprite:getBlits(i))
+  end
 end
 
 function test_b()
@@ -25,12 +34,17 @@ function test_b()
   slideBase.redraw()
   print("E")
   
-  testPlane_a = plane.new(8,16)
-  testPlane_b = plane.new(12,12)
-  testPlane_a.test_set("beep")
-  testPlane_b.test_set("boop")
-  print(testPlane_a.test_get())
-  print(testPlane_b.test_get())
+  testPlane_a = plane:new(8,16, 0, 15)
+  testPlane_b = plane:new(12,12, 3, 2)
+  testPlane_a:test_set("beep")
+  testPlane_b:test_set("boop")
+  print(testPlane_a:test_get())
+  print(testPlane_b:test_get())
+  blitSprite(scrn, testPlane_a, 2, 3)
+  blitSprite(scrn, testPlane_b, 12, 13)
+  testPlane_a:fillAll({"/","-","\\","|",nil,"|","\\","-","/"},12,0)
+  testPlane_a:write("Behold! my TRUE form!",1,1,6)
+  blitSprite(scrn, testPlane_a, 2, 13)
 
 end
 test_b()
