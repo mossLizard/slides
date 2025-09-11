@@ -1,6 +1,6 @@
 panel = window -- my w key is dodgy so I ould like to minimize the number of times I need to rely on it
 serl = textutils.serializeJSON
-plane = require("lib/charPlane")
+plane = require("lib/sprite")
 scrn = peripheral.wrap("monitor_1")
 
 function test_a()
