@@ -55,10 +55,11 @@ charPlane = {}
 	return sto
   end
   
-  function charPlane:write(vals, x, y, width)
+  function charPlane:write(vals, x, y, width, bullets)
     -- x and y are zero indexed. Or one indexed if you don't count the borders
-	-- pass a list of strings to vals to write each item on a new line
+	-- pass a table of strings to vals to write each item on a new line
 	-- pass a number to width to automatically wrap after that many characters
+	-- pass a list into bullets to read vals as a nested bullet pointed list. The first bullet will be applied to strings on the initial table, the second item to strings 1 table deep, etc. Items will be shifted over by the length of all previous bullet points. bullet each time and width will be decreased as needed.
 	if type(vals) == "string" then
 	  if width == nil then
 	    self.chars[y+1] = charPlane.overwriteAt(self.chars[y+1], vals, x)
@@ -68,7 +69,11 @@ charPlane = {}
 		end
 	  end
 	end
-	
+  end
+  
+  function charPlane:stamp(other, x, y)
+    -- places the second sprite OVER this one and overwrites any overlapping characters
+	-- x and y are zero indexed
   end
   
   function charPlane.borderHelper(orig, bdr, i)
@@ -98,6 +103,9 @@ charPlane = {}
   end
   
   function charPlane:fillAll(cha, tx, bg)
+    -- overwrites most of the sprite
+	-- pass a 1-long string to cha to fill the entire sprite with the single character.
+	-- pass a 9-item table to cha to use different characters for the borders of the image. Replace one of the items with nil to keep the original value of the sprite in that area.
     if (cha == nil or type(cha) == 'string') and 
 	(tx == nil or type(tx) == 'number' or type(tx) == 'string') and 
 	(bg == nil or type(bg) == 'number' or type(bg) == 'string') then
