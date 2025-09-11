@@ -1,6 +1,7 @@
 panel = window -- my w key is dodgy so I ould like to minimize the number of times I need to rely on it
 serl = textutils.serializeJSON
-plane = require("lib/sprite")
+Sprite = require("lib/sprite")
+SlideBase, Element, Transition = require("lib/slideDataStruct")
 scrn = peripheral.wrap("monitor_1")
 
 function test_a()
@@ -34,8 +35,8 @@ function test_b()
   slideBase.redraw()
   print("E")
   
-  testPlane_a = plane:new(8,16, 0, 15)
-  testPlane_b = plane:new(12,12, 3, 2)
+  testPlane_a = Sprite:new(8,16, 0, 15)
+  testPlane_b = Sprite:new(12,12, 3, 2)
   testPlane_a:test_set("beep")
   testPlane_b:test_set("boop")
   print(testPlane_a:test_get())
