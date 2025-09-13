@@ -1,9 +1,42 @@
 
 -- ELEMENT CLASS
 ElementClass = {}
-  function ElementClass.new(self, elementType)
-  
+  function ElementClass.new(self, elementType, elementName)
+    -- elementType: type of element. usually textBox or colorBox
+	-- elementName: name of the element. the names "title" and "body_*" are special for slide layout reasons.
+	if elementType == nil or type(elementType) ~= "string" then
+	  error("  Invalid / nil elementType passed when creating new Element!")
+	end
+	if elementType == nil or type(elementName) ~= "string" then
+	  error("  Invalid / nil elementName passed when creating new Element!")
+	end
+	o = {}
+    setmetatable(o, self)
+    self.__index = self
+	o.elementType = elementType
+	o.elementName = elementName
+	return o
   end
+  
+  local function ElementClass.typeRouter(elementType, functionType)
+    if elementType == nil then
+	  error("elementType Router called with nil input!")
+	elseif elementType == "textBox" then
+	  if functionType == "init" then
+	    return ElementClass.initTextBox
+	  end
+	  return true
+	elseif elementType == "image" then
+	  if functionType == "init" then
+	    return ElementClass.initTextBox
+	  end
+	  return true
+	else
+	  error("Invalid elementType '".. elementType) .."' passed to elementType router!")
+	end
+  end
+  
+  local function ElementClass.initTextBox(name)
   
   function ElementClass:listOverrides(onlyKeys)
     -- returns a dictionary pairing all currently set overrides to their values
@@ -51,16 +84,16 @@ SlideBaseClass = {}
 
 --TRANSITION CLASS
 TransitionClass = {}
-  function TransitionClass.router(name)
+  function TransitionClass.new(self)
+    
+  end
+  local function TransitionClass.router(name)
     if name == nil then
 	  error("Transition router called with nil input!")
     elseif type(name) ~= string then
 	  error("Non-string value ("..type(name)..") passed to transition router!")
 	end
 	error("Invalid transition name '".. name) .."' passed to transition router!")
-  end
-  function TransitionClass.new(self)
-    
   end
   function TransitionClass:applyProgress(baseSprite, overSprite, progress)
     -- Replaces data in baseSprite with data from overSprite, according to the selected transition settings and the given progress. Returns the modified baseSprite.
