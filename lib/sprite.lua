@@ -7,7 +7,7 @@ chr = string.char
 Sprite = {}
 
 
-  function Sprite.numOrCharToColor(inpt, fallback)
+  local function Sprite.numOrCharToColor(inpt, fallback)
     -- not making a backup case for fallback to encourage me to define one every time
     -- leave fallback nil if you want an error
     local tmp = {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'}
@@ -49,7 +49,7 @@ Sprite = {}
     end
   end
   
-  function Sprite.overwriteAt(inpt, repl, index)
+  local function Sprite.overwriteAt(inpt, repl, index)
     local sto = inpt:sub(1,index) .. repl .. inpt:sub(index + #repl+1, -1)
 	sto = sto:sub(1,#inpt)
 	return sto
@@ -76,7 +76,7 @@ Sprite = {}
 	-- x and y are zero indexed
   end
   
-  function Sprite.borderHelper(orig, bdr, i)
+  local function Sprite.borderHelper(orig, bdr, i)
     if type(bdr) == "number" then
 	  bdr = Sprite.numOrCharToColor(bdr)
 	  bdr = {bdr, bdr, bdr,
