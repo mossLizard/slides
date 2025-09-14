@@ -5,9 +5,7 @@
 chr = string.char
 
 Sprite = {}
-
-
-  local function Sprite.numOrCharToColor(inpt, fallback)
+  function Sprite.numOrCharToColor(inpt, fallback)
     -- not making a backup case for fallback to encourage me to define one every time
     -- leave fallback nil if you want an error
     local tmp = {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'}
@@ -36,7 +34,8 @@ Sprite = {}
   function Sprite:getBlits(lineNumber)
     -- returns the character, txt color, and bg color planes as three lists of blit-rows
     -- if lineNumber is defined, it will only return the corresponding blit-row of each
-    if lineNumber ~= nil then
+    --print(lineNumber)
+	if lineNumber ~= nil then
       return self.chars[lineNumber], self.colorsTx[lineNumber], self.colorsBg[lineNumber]
     end
     return self.chars, self.colorsTx, self.colorsBg
@@ -49,7 +48,7 @@ Sprite = {}
     end
   end
   
-  local function Sprite.overwriteAt(inpt, repl, index)
+  function Sprite.overwriteAt(inpt, repl, index)
     local sto = inpt:sub(1,index) .. repl .. inpt:sub(index + #repl+1, -1)
 	sto = sto:sub(1,#inpt)
 	return sto
@@ -76,7 +75,7 @@ Sprite = {}
 	-- x and y are zero indexed
   end
   
-  local function Sprite.borderHelper(orig, bdr, i)
+  function Sprite.borderHelper(orig, bdr, i, backupEnd)
     if type(bdr) == "number" then
 	  bdr = Sprite.numOrCharToColor(bdr)
 	  bdr = {bdr, bdr, bdr,
@@ -86,7 +85,7 @@ Sprite = {}
 	local lcr = {bdr[4], bdr[5], bdr[6]}
 	if i == 1 then
 	  lcr = {bdr[1], bdr[2], bdr[3]}
-	elseif i == #orig then
+	elseif i == (backupEnd or #orig) then
 	  lcr = {bdr[7], bdr[8], bdr[9]}
 	end
 	local sto = orig or ""
@@ -118,10 +117,10 @@ Sprite = {}
 	    self.colorsBg[i] = Sprite.numOrCharToColor(bg, 'f'):rep(self.width)
 	  end
 	else
-      for i=1, self.height do
-	    self.chars[i] = Sprite.borderHelper(self.chars[i],cha,i)
-	    self.colorsTx[i] = Sprite.borderHelper(self.colorsTx[i],tx,i)
-	    self.colorsBg[i] = Sprite.borderHelper(self.colorsBg[i],bg,i)
+      for i = 1, self.height do
+	    self.chars[i] = Sprite.borderHelper(self.chars[i],cha,i, self.height)
+	    self.colorsTx[i] = Sprite.borderHelper(self.colorsTx[i],tx,i, self.height)
+	    self.colorsBg[i] = Sprite.borderHelper(self.colorsBg[i],bg,i, self.height)
 	  end
 	end
   end
@@ -145,6 +144,7 @@ Sprite = {}
 	o.width = width
 	o.height = height
 	o:fillAll(chr(32), tx, bg)
+	--print(serl(o))
     --defTxtColor = Sprite.numOrCharToColor(defTxtColor, '0')
     return o
   end

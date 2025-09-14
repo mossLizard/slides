@@ -4,21 +4,39 @@ ElementClass = {}
   function ElementClass.new(self, elementType, elementName)
     -- elementType: type of element. usually textBox or colorBox
 	-- elementName: name of the element. the names "title" and "body_*" are special for slide layout reasons.
-	if elementType == nil or type(elementType) ~= "string" then
-	  error("  Invalid / nil elementType passed when creating new Element!")
+	if elementType == nil then
+	  error("No elementType passed when creating new Element!")
 	end
-	if elementType == nil or type(elementName) ~= "string" then
-	  error("  Invalid / nil elementName passed when creating new Element!")
+	if elementType == nil then
+	  error("No elementName passed when creating new Element!")
 	end
 	o = {}
     setmetatable(o, self)
     self.__index = self
 	o.elementType = elementType
 	o.elementName = elementName
+	o.overrides = {["isPreset"] = false}
+	initFunction = ElementClass.typeRouter(elementType, "init")
+	initFunction(o, elementName)
 	return o
   end
   
-  local function ElementClass.typeRouter(elementType, functionType)
+  function ElementClass:initTextBox(elementName)
+    if elementName == nil then
+	  error("Text box cannot have a nil elementName!")
+	end
+	self.overrides["content"] = "Hello, My Name Is "..elementName
+	
+	if elementName == "title" then
+	  self.overrides["content"] = " SLIDE TITLE "
+	  self.overrides["borderType"] = 2
+	  self.overrides["textAlignment"] = "center"
+	elseif elementName:sub(1,4) == "body" then
+	  self.overrides["content"] = "Select me and press E to edit my text!"
+    end
+  end
+  
+  function ElementClass.typeRouter(elementType, functionType)
     if elementType == nil then
 	  error("elementType Router called with nil input!")
 	elseif elementType == "textBox" then
@@ -32,19 +50,28 @@ ElementClass = {}
 	  end
 	  return true
 	else
-	  error("Invalid elementType '".. elementType) .."' passed to elementType router!")
+	  error("Invalid elementType '".. elementType .."' passed to elementType router!")
 	end
   end
   
-  local function ElementClass.initTextBox(name)
+  function ElementClass.initTextBox(name)
+  
+  end
   
   function ElementClass:listOverrides(onlyKeys)
     -- returns a dictionary pairing all currently set overrides to their values
-	-- Pass true to onlyKeys to return a list of overrides without values
+	-- Pass true to onlyKeys to return a list of present overrides without values
   end
   
-  function ElementClass:getOverride(overType)
-    -- returns the value of the override in overType
+  function ElementClass:getOverride(overType, default)
+    -- reads from this element's override table
+	--   If the override is present, returns the override value and true
+	--   Otherwise, returns the default value and false
+  end
+  
+  function ElementClass:clearOverride(overType)
+    -- Removes the specified override from this element. Returns true if successful.
+	-- If override was not present, returns false.
   end
 
 
@@ -87,13 +114,12 @@ TransitionClass = {}
   function TransitionClass.new(self)
     
   end
-  local function TransitionClass.router(name)
+  
+  function TransitionClass.router(name)
     if name == nil then
 	  error("Transition router called with nil input!")
-    elseif type(name) ~= string then
-	  error("Non-string value ("..type(name)..") passed to transition router!")
 	end
-	error("Invalid transition name '".. name) .."' passed to transition router!")
+	error("Unknown transition name '".. name .."' passed to transition router!")
   end
   function TransitionClass:applyProgress(baseSprite, overSprite, progress)
     -- Replaces data in baseSprite with data from overSprite, according to the selected transition settings and the given progress. Returns the modified baseSprite.
