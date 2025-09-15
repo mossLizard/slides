@@ -77,7 +77,11 @@ ElementClass = {}
 
 -- SLIDE BASE CLASS
 SlideBaseClass = {}
-  function SlideBaseClass.new(self)
+  function SlideBaseClass.new(self, sizeX, sizeY)
+  -- default slide size (40, 16)
+  -- intervals of (10x, 4x)
+  sizeX = sizeX or 40
+  sizeY = sizeY or 16
   
   end
   
